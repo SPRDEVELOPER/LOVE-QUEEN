@@ -16,6 +16,7 @@ def main() -> None:
         sys.exit(f"Configuration error: {exc}")
 
     app = build_application(settings)
+    logging.getLogger(__name__).info("starting in %s mode ...", settings.mode)
     if settings.mode == "webhook":
         app.run_webhook(
             listen="0.0.0.0",
@@ -27,7 +28,8 @@ def main() -> None:
             drop_pending_updates=True,
         )
     else:
-        app.run_polling(allowed_updates=Update.ALL_TYPES, drop_pending_updates=True)
+        # keep pending updates so commands sent while the bot was offline are answered
+        app.run_polling(allowed_updates=Update.ALL_TYPES, drop_pending_updates=False)
 
 
 if __name__ == "__main__":
