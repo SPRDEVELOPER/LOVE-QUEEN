@@ -1,0 +1,16 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes: [mongo-data:/data/db]
+
+  bot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MONGODB_URI: mongodb://mongo:27017   # overrides the value in .env
+    depends_on: [mongo]
+
+volumes:
+  mongo-data:
